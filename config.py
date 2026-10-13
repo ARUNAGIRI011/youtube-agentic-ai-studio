@@ -10,7 +10,7 @@ import os
 #  API Keys  (all free-tier)
 # ─────────────────────────────────────────
 GEMINI_API_KEY     = os.getenv("GEMINI_API_KEY",     "YOUR_GEMINI_API_KEY")
-PEXELS_API_KEY     = os.getenv("PEXELS_API_KEY",     "YOUR_PEXELS_API_KEY")
+PIXABAY_API_KEY    = os.getenv("PIXABAY_API_KEY",    "")  # optional; Openverse works without a key
 ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY", "YOUR_ELEVENLABS_KEY")  # optional
 
 # ─────────────────────────────────────────

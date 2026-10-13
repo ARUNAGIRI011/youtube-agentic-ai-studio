@@ -543,10 +543,10 @@ input[type=range]{width:100%;accent-color:var(--primary)}
               <input type="text" id="s-gemini" placeholder="Your Gemini API key">
             </div>
             <div class="settings-field">
-              <div class="field-label">Pexels API Key</div>
-              <input type="text" id="s-pexels" placeholder="Your Pexels API key">
+              <div class="field-label">Pixabay API Key (optional)</div>
+              <input type="text" id="s-pixabay" placeholder="Pixabay API key (optional)">
             </div>
-            <div class="help-text">Keys are saved to config.py. Get Gemini free at <strong>aistudio.google.com</strong>, Pexels at <strong>pexels.com/api</strong>.</div>
+            <div class="help-text">Keys are saved to config.py. Get Gemini at <strong>aistudio.google.com</strong> and optional Pixabay key at <strong>pixabay.com/api/docs</strong>. Openverse is used automatically as a no-key fallback.</div>
           </div>
         </div>
 
@@ -1161,7 +1161,7 @@ function toggleSection(header) {
 function loadSettings() {
   fetch('/api/settings').then(r=>r.json()).then(d => {
     document.getElementById('s-gemini').value       = d.gemini_key  || '';
-    document.getElementById('s-pexels').value       = d.pexels_key  || '';
+    document.getElementById('s-pixabay').value      = d.pixabay_key || '';
     document.getElementById('s-channel-name').value = d.channel_name|| '';
     document.getElementById('s-channel-desc').value = d.channel_desc|| '';
     document.getElementById('s-voice').value        = d.voice_id    || 'en-US-AndrewNeural';
@@ -1224,7 +1224,7 @@ function saveSettings() {
     method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({
       gemini_key:   document.getElementById('s-gemini').value,
-      pexels_key:   document.getElementById('s-pexels').value,
+      pixabay_key:  document.getElementById('s-pixabay').value,
       channel_name: document.getElementById('s-channel-name').value,
       channel_desc: document.getElementById('s-channel-desc').value,
       voice_id:     document.getElementById('s-voice').value,

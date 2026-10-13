@@ -735,14 +735,39 @@ def save_settings():
                 val = bool(val)
             setattr(config, attr, val)
 
-    # Patch config.py file on disk
+    # Persist API credentials in the git-ignored .env file, never in tracked config.py.
+    env_path = os.path.join(ROOT, ".env")
+    try:
+        env_values = {}
+        if "gemini_key" in body:
+            env_values["GEMINI_API_KEY"] = str(body.get("gemini_key") or "").replace("\\r", "").replace("\\n", "")
+        if "pixabay_key" in body:
+            env_values["PIXABAY_API_KEY"] = str(body.get("pixabay_key") or "").replace("\\r", "").replace("\\n", "")
+        if env_values:
+            existing = open(env_path, encoding="utf-8").read().splitlines() if os.path.exists(env_path) else []
+            written = set()
+            updated = []
+            for line in existing:
+                key = line.split("=", 1)[0].strip() if "=" in line else ""
+                if key in env_values:
+                    updated.append(f"{key}={env_values[key]}")
+                    written.add(key)
+                else:
+                    updated.append(line)
+            for key, value in env_values.items():
+                if key not in written:
+                    updated.append(f"{key}={value}")
+            with open(env_path, "w", encoding="utf-8") as env_file:
+                env_file.write("\\n".join(updated).rstrip() + "\\n")
+    except Exception as e:
+        return jsonify({"ok": False, "error": f"Settings changed in memory but .env write failed: {e}"})
+
+    # Patch non-secret preferences in config.py; credentials stay in .env.
     cfg_path = os.path.join(ROOT, "config.py")
     try:
         with open(cfg_path) as f: src = f.read()
 
         patches = {
-            "GEMINI_API_KEY":    body.get("gemini_key"),
-            "PIXABAY_API_KEY":   body.get("pixabay_key"),
             "MUSIC_ENABLED":     body.get("music_enabled"),
             "MUSIC_VOLUME":      body.get("music_volume"),
             "CHANNEL_NAME":      body.get("channel_name"),

@@ -12,7 +12,7 @@
 [![Free Tier](https://img.shields.io/badge/Cost-$0%20per%20video-brightgreen?style=flat-square)](SETUP.md)
 [![Stars](https://img.shields.io/github/stars/raunakpatil/youtube-agentic-ai-studio?style=flat-square)](https://github.com/raunakpatil/youtube-agentic-ai-studio/stargazers)
 
-[**Quick Start**](#-quick-start) · [**Features**](#-features) · [**Pipeline**](#️-how-it-works) · [**Setup Guide**](SETUP.md) · [**FAQ**](#-faq)
+[**Quick Start**](#-quick-start) · [**Features**](#-features) · [**Pipeline**](#️-how-it-works) · [**Setup Guide**](SETUP.md) · [**Android Setup**](ANDROID.md) · [**FAQ**](#-faq)
 
 </div>
 
@@ -59,11 +59,17 @@ This repo powers **[Eldritch Lore](https://www.youtube.com/@EldritchLore)** — 
 
 ---
 
+## 📱 Android support
+
+See [ANDROID.md](ANDROID.md) for two modes: run the workflow on-device with Termux (experimental), or control a Windows-hosted pipeline from the phone over a trusted Wi-Fi network. The dashboard includes a responsive mobile layout and installable PWA shell where secure-context requirements are met.
+
+---
+
 ## ⚡ Quick Start
 
 ```bash
 # 1. Clone
-git clone https://github.com/raunakpatil/youtube-agentic-ai-studio.git
+git clone https://github.com/ARUNAGIRI011/youtube-agentic-ai-studio.git
 cd youtube-agentic-ai-studio
 
 # 2. Install dependencies
@@ -75,7 +81,7 @@ cp .env.example .env
 
 # 4. Run the GUI
 python gui.py
-# → Opens at http://localhost:7842
+# → Opens at http://localhost:7070
 
 # — OR — run the pipeline directly from the terminal
 python pipeline.py

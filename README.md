@@ -223,7 +223,8 @@ OVERLAY_OPACITY    = 0.62  # how dark the image overlay is
 
 No. The entire stack uses free tiers:
 - **Gemini** — 1500 req/day free on the 2.0-flash model
-- **Pixabay** — free API with provider limits; optional\n- **Openverse** — no key required; supported open licenses only
+- **Pixabay** — free API with provider limits; optional
+- **Openverse** — no key required; supported open licenses only
 - **Edge TTS** — completely free, no account needed
 - **YouTube Data API** — free for uploads
 - **Video rendering** — runs locally on your machine (CPU/GPU)

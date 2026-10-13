@@ -412,6 +412,52 @@ def index():
         return f.read()
 
 
+@app.route("/manifest.webmanifest")
+def pwa_manifest():
+    manifest = {
+        "id": "/",
+        "name": "AI Vidro Automation Pipeline",
+        "short_name": "AI Vidro",
+        "description": "Create, review, and manage AI-assisted videos from a mobile or desktop browser.",
+        "start_url": "/",
+        "scope": "/",
+        "display": "standalone",
+        "orientation": "any",
+        "background_color": "#09090f",
+        "theme_color": "#09090f",
+        "icons": [
+            {"src": "/static/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}
+        ]
+    }
+    return Response(json.dumps(manifest), mimetype="application/manifest+json",
+                    headers={"Cache-Control": "no-cache"})
+
+
+@app.route("/sw.js")
+def pwa_service_worker():
+    source = r'''const CACHE = "ai-vidro-shell-v1";
+const SHELL = ["/", "/manifest.webmanifest", "/static/icon.svg"];
+self.addEventListener("install", event => {
+  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting()));
+});
+self.addEventListener("activate", event => {
+  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key)))).then(() => self.clients.claim()));
+});
+self.addEventListener("fetch", event => {
+  const url = new URL(event.request.url);
+  if (event.request.method !== "GET" || url.origin !== self.location.origin || url.pathname.startsWith("/api/")) return;
+  if (event.request.mode === "navigate") {
+    event.respondWith(fetch(event.request).then(response => {
+      if (response.ok) caches.open(CACHE).then(cache => cache.put("/", response.clone()));
+      return response;
+    }).catch(async () => (await caches.match("/")) || Response.error()));
+  }
+});
+'''
+    return Response(source, mimetype="application/javascript",
+                    headers={"Service-Worker-Allowed": "/", "Cache-Control": "no-cache"})
+
+
 # ── SSE stream ────────────────────────────────────────────────────────────────
 
 @app.route("/api/stream")

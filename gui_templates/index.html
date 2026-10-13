@@ -487,6 +487,7 @@ input[type=range]{width:100%;accent-color:var(--primary)}
                 <span>Generate a video first</span>
               </div>
             </div>
+            <a id="download-video" class="btn btn-primary btn-full" href="/download" style="display:none;margin-top:10px;text-decoration:none">⬇ Download MP4</a>
           </div>
 
           <div>
@@ -1065,8 +1066,10 @@ function loadReviewData() {
       tw.style.maxWidth    = isShorts ? '340px' : '';
       tw.style.margin      = isShorts ? '0 auto' : '';
     }
+    const downloadBtn = document.getElementById('download-video');
+    if (downloadBtn) downloadBtn.style.display = d.has_video ? 'inline-flex' : 'none';
     if (d.has_video) {
-      vw.innerHTML = `<video controls><source src="/video?t=${Date.now()}" type="video/mp4"></video>`;
+      vw.innerHTML = `<video controls playsinline><source src="/video?t=${Date.now()}" type="video/mp4"></video>`;
     }
     if (d.has_thumb) {
       tw.innerHTML = `<img id="thumb-img" src="/thumbnail/${Date.now()}" alt="Thumbnail">`;

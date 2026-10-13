@@ -260,7 +260,7 @@ Respond with ONLY a valid JSON object. No markdown fences, no extra text:
 IMPORTANT:
 - Total narration across ALL sections: 120-160 words maximum
 - Each section narration must be complete, broadcast-ready sentences
-- image_query and image_query_2/3/4 must all be DIFFERENT specific Pexels visual search strings
+- image_query and image_query_2/3/4 must all be DIFFERENT specific stock-image visual search strings
 - title fields are INTERNAL labels only — they are never shown on screen"""
 
     print("   → Writing Shorts script with Gemini...")

@@ -829,7 +829,11 @@ def post_banned_topics():
 if __name__ == "__main__":
     import webbrowser
     port = 7070
-    print(f"\n🎬  YouTube AI Agent Studio")
-    print(f"   Opening at  http://localhost:{port}\n")
+    host = os.getenv("AI_VIDRO_HOST", "127.0.0.1")
+    print(f"\n🎬  AI Vidro Automation Pipeline")
+    print(f"   Opening at  http://localhost:{port}")
+    if host == "0.0.0.0":
+        print("   LAN access is enabled. Use only on a trusted private network; this UI has no login.")
+    print()
     threading.Timer(1.4, lambda: webbrowser.open(f"http://localhost:{port}")).start()
-    app.run(port=port, debug=False, threaded=True, use_reloader=False)
+    app.run(host=host, port=port, debug=False, threaded=True, use_reloader=False)

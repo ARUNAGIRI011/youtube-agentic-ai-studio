@@ -1309,7 +1309,7 @@ function saveSettings() {
     const msg = document.getElementById('settings-msg');
     if (d.ok) {
       msg.style.display = 'block'; msg.style.color='var(--green)';
-      msg.textContent = '✓ Settings saved to config.py';
+      msg.textContent = '✓ Settings saved locally';
     } else {
       msg.style.display = 'block'; msg.style.color='var(--red)';
       msg.textContent = '✗ '+d.error;

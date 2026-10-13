@@ -178,7 +178,8 @@ GEMINI_MODEL = "gemini-2.0-flash"   # 1500 free req/day — recommended default
 | Service | Key | Free Tier | Where to get it |
 |---|---|---|---|
 | **Google Gemini** | `GEMINI_API_KEY` | 1500 req/day | [aistudio.google.com](https://aistudio.google.com/apikey) |
-| **Pixabay** | `PIXABAY_API_KEY` (optional) | Free API; provider limits apply | [pixabay.com/api/docs](https://pixabay.com/api/docs/) |\n| **Openverse** | *(no key)* | Public endpoint; rate limits apply | [openverse.org](https://openverse.org/) |
+| **Pixabay** | `PIXABAY_API_KEY` (optional) | Free API; provider limits apply | [pixabay.com/api/docs](https://pixabay.com/api/docs/) |
+| **Openverse** | *(no key)* | Public endpoint; rate limits apply | [openverse.org](https://openverse.org/) |
 | **Edge TTS** | *(none)* | Unlimited | Built-in |
 | **YouTube API** | `client_secret.json` | Free | [Google Cloud Console](https://console.cloud.google.com) |
 | **ElevenLabs** | `ELEVENLABS_API_KEY` | Optional | [elevenlabs.io](https://elevenlabs.io) |

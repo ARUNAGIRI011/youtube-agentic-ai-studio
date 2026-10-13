@@ -215,3 +215,14 @@ python gui.py
 ---
 
 If you get stuck, [open an issue](https://github.com/yourusername/youtube-ai-agent/issues) with your error message and OS.
+
+
+## Android browser access (optional)
+
+The video pipeline and rendering run on the Windows PC; Android is a remote dashboard/preview client. Keep both devices on the same trusted Wi-Fi network.
+
+1. In your local `.env`, set `AI_VIDRO_HOST=0.0.0.0` and restart `python gui.py`.
+2. Allow Python on **Private networks only** in Windows Defender Firewall if prompted.
+3. Find the PC's LAN IPv4 address with `ipconfig`, then open `http://PC-LAN-IP:7070` on Android.
+
+**Security:** this local dashboard does not provide login authentication. Use it only on a trusted private LAN; do not port-forward it or expose it directly to the public internet. Leave `AI_VIDRO_HOST=127.0.0.1` for Windows-only access.

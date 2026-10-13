@@ -529,6 +529,16 @@ def serve_video():
     if p and os.path.exists(p): return send_file(p, mimetype="video/mp4")
     abort(404)
 
+
+@app.route("/download")
+def download_video():
+    p = _state.get("video_path")
+    if p and os.path.isfile(p):
+        return send_file(p, mimetype="video/mp4", as_attachment=True,
+                         download_name=os.path.basename(p), max_age=0)
+    abort(404)
+
+
 @app.route("/thumbnail")
 def serve_thumb():
     p = _state.get("thumb_path")

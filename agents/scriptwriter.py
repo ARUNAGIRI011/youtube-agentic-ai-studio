@@ -162,7 +162,7 @@ Respond with ONLY a valid JSON object. No markdown fences, no extra text:
 
 IMPORTANT:
 - image_query / image_query_2 / image_query_3 must be VISUALLY DISTINCT from each other (wide → close → abstract).
-- Use SPECIFIC Pexels search strings (e.g. "black hole accretion disk simulation" not just "space").
+- Use SPECIFIC stock-image search strings (e.g. "black hole accretion disk simulation" not just "space").
 - Narration for sections 4 and 6 MUST start with the mandatory re-hook lines as described.
 - The open-loop question from section 2 MUST be answered in section 5.
 - Every narration field must contain COMPLETE, broadcast-ready sentences — no placeholders.

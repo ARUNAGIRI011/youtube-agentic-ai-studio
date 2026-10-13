@@ -1,5 +1,11 @@
 import os
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
+except ImportError:
+    pass  # Environment variables can also be configured directly in the shell.
+
 # ─────────────────────────────────────────────────────────────────────────────
 #  YouTube AI Agent Studio — Configuration
 #  Copy this file as-is. Fill in your API keys below (or use env vars).

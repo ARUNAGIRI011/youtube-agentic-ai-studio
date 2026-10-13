@@ -682,7 +682,7 @@ def upload():
 def get_settings():
     return jsonify({
         "gemini_key":      config.GEMINI_API_KEY,
-        "pexels_key":      config.PEXELS_API_KEY,
+        "pixabay_key":     getattr(config, "PIXABAY_API_KEY", ""),
         "music_enabled":   getattr(config, "MUSIC_ENABLED", True),
         "music_volume":    getattr(config, "MUSIC_VOLUME", 0.12),
         "music_library":   getattr(config, "MUSIC_LIBRARY_DIR", ""),
@@ -708,7 +708,7 @@ def save_settings():
     # Update live config object
     m = {
         "gemini_key":    "GEMINI_API_KEY",
-        "pexels_key":    "PEXELS_API_KEY",
+        "pixabay_key":   "PIXABAY_API_KEY",
         "music_enabled": "MUSIC_ENABLED",
         "music_volume":  "MUSIC_VOLUME",
         "channel_name":  "CHANNEL_NAME",
@@ -742,7 +742,7 @@ def save_settings():
 
         patches = {
             "GEMINI_API_KEY":    body.get("gemini_key"),
-            "PEXELS_API_KEY":    body.get("pexels_key"),
+            "PIXABAY_API_KEY":   body.get("pixabay_key"),
             "MUSIC_ENABLED":     body.get("music_enabled"),
             "MUSIC_VOLUME":      body.get("music_volume"),
             "CHANNEL_NAME":      body.get("channel_name"),

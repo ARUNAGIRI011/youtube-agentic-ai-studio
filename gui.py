@@ -740,9 +740,9 @@ def save_settings():
     try:
         env_values = {}
         if "gemini_key" in body:
-            env_values["GEMINI_API_KEY"] = str(body.get("gemini_key") or "").replace("\\r", "").replace("\\n", "")
+            env_values["GEMINI_API_KEY"] = str(body.get("gemini_key") or "").replace("\r", "").replace("\n", "")
         if "pixabay_key" in body:
-            env_values["PIXABAY_API_KEY"] = str(body.get("pixabay_key") or "").replace("\\r", "").replace("\\n", "")
+            env_values["PIXABAY_API_KEY"] = str(body.get("pixabay_key") or "").replace("\r", "").replace("\n", "")
         if env_values:
             existing = open(env_path, encoding="utf-8").read().splitlines() if os.path.exists(env_path) else []
             written = set()
@@ -758,7 +758,7 @@ def save_settings():
                 if key not in written:
                     updated.append(f"{key}={value}")
             with open(env_path, "w", encoding="utf-8") as env_file:
-                env_file.write("\\n".join(updated).rstrip() + "\\n")
+                env_file.write("\n".join(updated).rstrip() + "\n")
     except Exception as e:
         return jsonify({"ok": False, "error": f"Settings changed in memory but .env write failed: {e}"})
 

@@ -1,5 +1,11 @@
 import os
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
+except ImportError:
+    pass  # Environment variables can also be configured directly in the shell.
+
 # ─────────────────────────────────────────────────────────────────────────────
 #  YouTube AI Agent Studio — Configuration
 #  Copy this file as-is. Fill in your API keys below (or use env vars).
@@ -10,7 +16,7 @@ import os
 #  API Keys  (all free-tier)
 # ─────────────────────────────────────────
 GEMINI_API_KEY     = os.getenv("GEMINI_API_KEY",     "YOUR_GEMINI_API_KEY")
-PEXELS_API_KEY     = os.getenv("PEXELS_API_KEY",     "YOUR_PEXELS_API_KEY")
+PIXABAY_API_KEY    = os.getenv("PIXABAY_API_KEY",    "")  # optional; Openverse works without a key
 ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY", "YOUR_ELEVENLABS_KEY")  # optional
 
 # ─────────────────────────────────────────

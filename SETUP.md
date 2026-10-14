@@ -1,4 +1,4 @@
-# 🛠️ Setup Guide
+# 🛠️ AI Vidro Automation Pipeline — Setup Guide
 
 Complete step-by-step instructions to get YouTube AI Agent Studio running from scratch.
 
@@ -11,7 +11,7 @@ Complete step-by-step instructions to get YouTube AI Agent Studio running from s
 - Python **3.10 or newer** — [python.org/downloads](https://www.python.org/downloads/)
 - `ffmpeg` installed and on your PATH (see [Step 1b](#1b-install-ffmpeg))
 - A Google account (for Gemini + YouTube)
-- A Pexels account (free image API)
+- Optional: a Pixabay account for an API key; Openverse is used as a no-key fallback
 
 ---
 
@@ -55,11 +55,11 @@ pip install -r requirements.txt
 3. Click **Create API Key**
 4. Copy the key
 
-### 2b. Pexels API Key (required — free)
+### 2b. Pixabay API Key (optional)
 
-1. Go to [pexels.com/api](https://www.pexels.com/api/)
-2. Create a free account and click **Your API Key**
-3. Copy the key
+1. Go to [pixabay.com/api/docs](https://pixabay.com/api/docs/)
+2. Sign in and request a free API key
+3. Set `PIXABAY_API_KEY` in `.env`, or leave it blank to use Openverse automatically. Openverse searches CC0, public-domain-marked, CC BY, and CC BY-SA licenses; attribution details are written to `output/images/attribution.json`.
 
 ---
 
@@ -70,15 +70,15 @@ pip install -r requirements.txt
 ```bash
 # Mac / Linux
 export GEMINI_API_KEY="your_key_here"
-export PEXELS_API_KEY="your_key_here"
+export PIXABAY_API_KEY="your_key_here"
 
 # Windows (Command Prompt)
 set GEMINI_API_KEY=your_key_here
-set PEXELS_API_KEY=your_key_here
+set PIXABAY_API_KEY=your_key_here
 
 # Windows (PowerShell)
 $env:GEMINI_API_KEY="your_key_here"
-$env:PEXELS_API_KEY="your_key_here"
+$env:PIXABAY_API_KEY="your_key_here"
 ```
 
 To make these permanent, add them to your shell profile (`~/.bashrc`, `~/.zshrc`) or use a `.env` file:
@@ -94,7 +94,7 @@ Open `config.py` and replace the placeholder values:
 
 ```python
 GEMINI_API_KEY = "AIza..."     # your Gemini key
-PEXELS_API_KEY = "abc123..."   # your Pexels key
+PIXABAY_API_KEY = "abc123..."   # optional Pixabay key
 ```
 
 ---
@@ -215,3 +215,14 @@ python gui.py
 ---
 
 If you get stuck, [open an issue](https://github.com/yourusername/youtube-ai-agent/issues) with your error message and OS.
+
+
+## Android browser access (optional)
+
+The video pipeline and rendering run on the Windows PC; Android is a remote dashboard/preview client. Keep both devices on the same trusted Wi-Fi network.
+
+1. In your local `.env`, set `AI_VIDRO_HOST=0.0.0.0` and restart `python gui.py`.
+2. Allow Python on **Private networks only** in Windows Defender Firewall if prompted.
+3. Find the PC's LAN IPv4 address with `ipconfig`, then open `http://PC-LAN-IP:7070` on Android.
+
+**Security:** this local dashboard does not provide login authentication. Use it only on a trusted private LAN; do not port-forward it or expose it directly to the public internet. Leave `AI_VIDRO_HOST=127.0.0.1` for Windows-only access.

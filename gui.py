@@ -412,6 +412,52 @@ def index():
         return f.read()
 
 
+@app.route("/manifest.webmanifest")
+def pwa_manifest():
+    manifest = {
+        "id": "/",
+        "name": "AI Vidro Automation Pipeline",
+        "short_name": "AI Vidro",
+        "description": "Create, review, and manage AI-assisted videos from a mobile or desktop browser.",
+        "start_url": "/",
+        "scope": "/",
+        "display": "standalone",
+        "orientation": "any",
+        "background_color": "#09090f",
+        "theme_color": "#09090f",
+        "icons": [
+            {"src": "/static/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}
+        ]
+    }
+    return Response(json.dumps(manifest), mimetype="application/manifest+json",
+                    headers={"Cache-Control": "no-cache"})
+
+
+@app.route("/sw.js")
+def pwa_service_worker():
+    source = r'''const CACHE = "ai-vidro-shell-v1";
+const SHELL = ["/", "/manifest.webmanifest", "/static/icon.svg"];
+self.addEventListener("install", event => {
+  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting()));
+});
+self.addEventListener("activate", event => {
+  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key)))).then(() => self.clients.claim()));
+});
+self.addEventListener("fetch", event => {
+  const url = new URL(event.request.url);
+  if (event.request.method !== "GET" || url.origin !== self.location.origin || url.pathname.startsWith("/api/")) return;
+  if (event.request.mode === "navigate") {
+    event.respondWith(fetch(event.request).then(response => {
+      if (response.ok) caches.open(CACHE).then(cache => cache.put("/", response.clone()));
+      return response;
+    }).catch(async () => (await caches.match("/")) || Response.error()));
+  }
+});
+'''
+    return Response(source, mimetype="application/javascript",
+                    headers={"Service-Worker-Allowed": "/", "Cache-Control": "no-cache"})
+
+
 # ── SSE stream ────────────────────────────────────────────────────────────────
 
 @app.route("/api/stream")
@@ -482,6 +528,16 @@ def serve_video():
     p = _state.get("video_path")
     if p and os.path.exists(p): return send_file(p, mimetype="video/mp4")
     abort(404)
+
+
+@app.route("/download")
+def download_video():
+    p = _state.get("video_path")
+    if p and os.path.isfile(p):
+        return send_file(p, mimetype="video/mp4", as_attachment=True,
+                         download_name=os.path.basename(p), max_age=0)
+    abort(404)
+
 
 @app.route("/thumbnail")
 def serve_thumb():
@@ -682,7 +738,7 @@ def upload():
 def get_settings():
     return jsonify({
         "gemini_key":      config.GEMINI_API_KEY,
-        "pexels_key":      config.PEXELS_API_KEY,
+        "pixabay_key":     getattr(config, "PIXABAY_API_KEY", ""),
         "music_enabled":   getattr(config, "MUSIC_ENABLED", True),
         "music_volume":    getattr(config, "MUSIC_VOLUME", 0.12),
         "music_library":   getattr(config, "MUSIC_LIBRARY_DIR", ""),
@@ -708,7 +764,7 @@ def save_settings():
     # Update live config object
     m = {
         "gemini_key":    "GEMINI_API_KEY",
-        "pexels_key":    "PEXELS_API_KEY",
+        "pixabay_key":   "PIXABAY_API_KEY",
         "music_enabled": "MUSIC_ENABLED",
         "music_volume":  "MUSIC_VOLUME",
         "channel_name":  "CHANNEL_NAME",
@@ -735,14 +791,39 @@ def save_settings():
                 val = bool(val)
             setattr(config, attr, val)
 
-    # Patch config.py file on disk
+    # Persist API credentials in the git-ignored .env file, never in tracked config.py.
+    env_path = os.path.join(ROOT, ".env")
+    try:
+        env_values = {}
+        if "gemini_key" in body:
+            env_values["GEMINI_API_KEY"] = str(body.get("gemini_key") or "").replace("\r", "").replace("\n", "")
+        if "pixabay_key" in body:
+            env_values["PIXABAY_API_KEY"] = str(body.get("pixabay_key") or "").replace("\r", "").replace("\n", "")
+        if env_values:
+            existing = open(env_path, encoding="utf-8").read().splitlines() if os.path.exists(env_path) else []
+            written = set()
+            updated = []
+            for line in existing:
+                key = line.split("=", 1)[0].strip() if "=" in line else ""
+                if key in env_values:
+                    updated.append(f"{key}={env_values[key]}")
+                    written.add(key)
+                else:
+                    updated.append(line)
+            for key, value in env_values.items():
+                if key not in written:
+                    updated.append(f"{key}={value}")
+            with open(env_path, "w", encoding="utf-8") as env_file:
+                env_file.write("\n".join(updated).rstrip() + "\n")
+    except Exception as e:
+        return jsonify({"ok": False, "error": f"Settings changed in memory but .env write failed: {e}"})
+
+    # Patch non-secret preferences in config.py; credentials stay in .env.
     cfg_path = os.path.join(ROOT, "config.py")
     try:
         with open(cfg_path) as f: src = f.read()
 
         patches = {
-            "GEMINI_API_KEY":    body.get("gemini_key"),
-            "PEXELS_API_KEY":    body.get("pexels_key"),
             "MUSIC_ENABLED":     body.get("music_enabled"),
             "MUSIC_VOLUME":      body.get("music_volume"),
             "CHANNEL_NAME":      body.get("channel_name"),
@@ -804,7 +885,11 @@ def post_banned_topics():
 if __name__ == "__main__":
     import webbrowser
     port = 7070
-    print(f"\n🎬  YouTube AI Agent Studio")
-    print(f"   Opening at  http://localhost:{port}\n")
+    host = os.getenv("AI_VIDRO_HOST", "127.0.0.1")
+    print(f"\n🎬  AI Vidro Automation Pipeline")
+    print(f"   Opening at  http://localhost:{port}")
+    if host == "0.0.0.0":
+        print("   LAN access is enabled. Use only on a trusted private network; this UI has no login.")
+    print()
     threading.Timer(1.4, lambda: webbrowser.open(f"http://localhost:{port}")).start()
-    app.run(port=port, debug=False, threaded=True, use_reloader=False)
+    app.run(host=host, port=port, debug=False, threaded=True, use_reloader=False)

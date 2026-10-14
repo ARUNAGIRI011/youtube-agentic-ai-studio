@@ -4,8 +4,9 @@
 # AI Brain — NEW SDK (replaces deprecated google-generativeai)
 google-genai>=1.0.0
 
-# HTTP requests (Pexels image downloads)
+# HTTP requests and local .env support
 requests>=2.31.0
+python-dotenv>=1.0.0
 
 # Voiceover — 100% free, no API key needed
 edge-tts>=6.1.9
